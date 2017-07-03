@@ -924,6 +924,11 @@ namespace MissionPlanner
         [DisplayText("Sonar Voltage (Volt)")]
         public float sonarvoltage { get; set; }
 
+        [DisplayText("DirectionFinder Direction")]
+        public float directiondirection { get; set; }
+
+        [DisplayText("DirectionFinder Magnitude")]
+        public float directionmagnitude { get; set; }
         // current firmware
         public MainV2.Firmwares firmware = MainV2.Firmwares.ArduCopter2;
         public float freemem { get; set; }
@@ -1693,6 +1698,15 @@ namespace MissionPlanner
 
                         sonarrange = sonar.distance;
                         sonarvoltage = sonar.voltage;
+                    }
+
+                    mavLinkMessage = MAV.getPacket((uint)MAVLink.MAVLINK_MSG_ID.DIRECTIONFINDER);
+                    if (mavLinkMessage != null)
+                    {
+                        var direction = mavLinkMessage.ToStructure<MAVLink.mavlink_directionfinder_t>();
+
+                        directiondirection = direction.direction;
+                        directionmagnitude = direction.magnitude;
                     }
 
                     mavLinkMessage = MAV.getPacket((uint) MAVLink.MAVLINK_MSG_ID.POWER_STATUS);

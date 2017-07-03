@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 public partial class MAVLink
 {
-    public const string MAVLINK_BUILD_DATE = "Tue Apr 25 2017";
+    public const string MAVLINK_BUILD_DATE = "Sun Jul 02 2017";
     public const string MAVLINK_WIRE_PROTOCOL_VERSION = "2.0";
     public const int MAVLINK_MAX_PAYLOAD_LEN = 255;
 
@@ -203,6 +203,8 @@ public partial class MAVLink
 		new message_info(218, "GOPRO_SET_REQUEST", 17, 7, 7, typeof( mavlink_gopro_set_request_t )),
 		new message_info(219, "GOPRO_SET_RESPONSE", 162, 2, 2, typeof( mavlink_gopro_set_response_t )),
 		new message_info(226, "RPM", 207, 8, 8, typeof( mavlink_rpm_t )),
+		new message_info(227, "DIRECTIONFINDER", 225, 2, 2, typeof( mavlink_directionfinder_t )),
+		new message_info(228, "DIRECTION_SENSOR", 199, 3, 3, typeof( mavlink_direction_sensor_t )),
 		new message_info(230, "ESTIMATOR_STATUS", 163, 42, 42, typeof( mavlink_estimator_status_t )),
 		new message_info(231, "WIND_COV", 105, 40, 40, typeof( mavlink_wind_cov_t )),
 		new message_info(232, "GPS_INPUT", 151, 63, 63, typeof( mavlink_gps_input_t )),
@@ -238,13 +240,6 @@ public partial class MAVLink
 		new message_info(10001, "UAVIONIX_ADSB_OUT_CFG", 209, 20, 20, typeof( mavlink_uavionix_adsb_out_cfg_t )),
 		new message_info(10002, "UAVIONIX_ADSB_OUT_DYNAMIC", 186, 41, 41, typeof( mavlink_uavionix_adsb_out_dynamic_t )),
 		new message_info(10003, "UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT", 4, 1, 1, typeof( mavlink_uavionix_adsb_transceiver_health_report_t )),
-		new message_info(11000, "DEVICE_OP_READ", 134, 51, 51, typeof( mavlink_device_op_read_t )),
-		new message_info(11001, "DEVICE_OP_READ_REPLY", 15, 135, 135, typeof( mavlink_device_op_read_reply_t )),
-		new message_info(11002, "DEVICE_OP_WRITE", 234, 179, 179, typeof( mavlink_device_op_write_t )),
-		new message_info(11003, "DEVICE_OP_WRITE_REPLY", 64, 5, 5, typeof( mavlink_device_op_write_reply_t )),
-		new message_info(11010, "ADAP_TUNING", 46, 49, 49, typeof( mavlink_adap_tuning_t )),
-		new message_info(11011, "VISION_POSITION_DELTA", 106, 44, 44, typeof( mavlink_vision_position_delta_t )),
-		new message_info(11020, "AOA_SSA", 205, 16, 16, typeof( mavlink_aoa_ssa_t )),
 
 	};
 
@@ -446,6 +441,8 @@ GOPRO_GET_RESPONSE = 217,
 GOPRO_SET_REQUEST = 218,
 GOPRO_SET_RESPONSE = 219,
 RPM = 226,
+DIRECTIONFINDER = 227,
+DIRECTION_SENSOR = 228,
 ESTIMATOR_STATUS = 230,
 WIND_COV = 231,
 GPS_INPUT = 232,
@@ -481,34 +478,9 @@ LOGGING_ACK = 268,
 UAVIONIX_ADSB_OUT_CFG = 10001,
 UAVIONIX_ADSB_OUT_DYNAMIC = 10002,
 UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT = 10003,
-DEVICE_OP_READ = 11000,
-DEVICE_OP_READ_REPLY = 11001,
-DEVICE_OP_WRITE = 11002,
-DEVICE_OP_WRITE_REPLY = 11003,
-ADAP_TUNING = 11010,
-VISION_POSITION_DELTA = 11011,
-AOA_SSA = 11020,
 
     }  
 	    
-    
-    ///<summary>  </summary>
-    public enum ACCELCAL_VEHICLE_POS: int /*default*/
-    {
-			///<summary>  | </summary>
-        LEVEL=1, 
-    	///<summary>  | </summary>
-        LEFT=2, 
-    	///<summary>  | </summary>
-        RIGHT=3, 
-    	///<summary>  | </summary>
-        NOSEDOWN=4, 
-    	///<summary>  | </summary>
-        NOSEUP=5, 
-    	///<summary>  | </summary>
-        BACK=6, 
-    
-    };
     
     ///<summary> Commands to be executed by the MAV. They can be executed on user request, or as part of a mission script. If the action is used in a mission, the parameter mapping to the waypoint/mission message is as follows: Param 1, Param 2, Param 3, Param 4, X: Param 5, Y:Param 6, Z:Param 7. This command list is similar what ARINC 424 is for commercial aircraft: A data format how to interpret waypoint/mission data. </summary>
     public enum MAV_CMD: ushort
@@ -769,8 +741,6 @@ AOA_SSA = 11020,
         SET_FACTORY_TEST_MODE=42427, 
     	///<summary> Reply with the version banner |Empty| Empty| Empty| Empty| Empty| Empty| Empty|  </summary>
         DO_SEND_BANNER=42428, 
-    	///<summary> Used when doing accelerometer calibration. When sent to the GCS tells it what position to put the vehicle in. When sent to the vehicle says what position the vehicle is in. |Position, one of the ACCELCAL_VEHICLE_POS enum values| Empty| Empty| Empty| Empty| Empty| Empty|  </summary>
-        ACCELCAL_VEHICLE_POS=42429, 
     	///<summary> Causes the gimbal to reset and boot as if it was just powered on |Empty| Empty| Empty| Empty| Empty| Empty| Empty|  </summary>
         GIMBAL_RESET=42501, 
     	///<summary> Reports progress and success or failure of gimbal axis calibration procedure |Gimbal axis we're reporting calibration progress for| Current calibration progress for this axis, 0x64=100%| Status of the calibration| Empty| Empty| Empty| Empty|  </summary>
@@ -801,7 +771,7 @@ AOA_SSA = 11020,
     };
     
     ///<summary>  </summary>
-    public enum LIMIT_MODULE: byte
+    public enum LIMIT_MODULE: int /*default*/
     {
 			///<summary> pre-initialization | </summary>
         LIMIT_GPSLOCK=1, 
@@ -813,7 +783,7 @@ AOA_SSA = 11020,
     };
     
     ///<summary> Flags in RALLY_POINT message </summary>
-    public enum RALLY_FLAGS: byte
+    public enum RALLY_FLAGS: int /*default*/
     {
 			///<summary> Flag set when requiring favorable winds for landing. | </summary>
         FAVORABLE_WIND=1, 
@@ -845,7 +815,7 @@ AOA_SSA = 11020,
     };
     
     ///<summary>  </summary>
-    public enum CAMERA_STATUS_TYPES: byte
+    public enum CAMERA_STATUS_TYPES: int /*default*/
     {
 			///<summary> Camera heartbeat, announce camera component ID at 1hz | </summary>
         CAMERA_STATUS_TYPE_HEARTBEAT=0, 
@@ -865,7 +835,7 @@ AOA_SSA = 11020,
     };
     
     ///<summary>  </summary>
-    public enum CAMERA_FEEDBACK_FLAGS: byte
+    public enum CAMERA_FEEDBACK_FLAGS: int /*default*/
     {
 			///<summary> Shooting photos, not video | </summary>
         CAMERA_FEEDBACK_PHOTO=0, 
@@ -951,7 +921,7 @@ AOA_SSA = 11020,
     };
     
     ///<summary>  </summary>
-    public enum GOPRO_HEARTBEAT_FLAGS: byte
+    public enum GOPRO_HEARTBEAT_FLAGS: int /*default*/
     {
 			///<summary> GoPro is currently recording | </summary>
         GOPRO_FLAG_RECORDING=1, 
@@ -1299,7 +1269,7 @@ AOA_SSA = 11020,
     };
     
     ///<summary> Flags in EKF_STATUS message </summary>
-    public enum EKF_STATUS_FLAGS: ushort
+    public enum EKF_STATUS_FLAGS: int /*default*/
     {
 			///<summary> set if EKF's attitude estimate is good | </summary>
         EKF_ATTITUDE=1, 
@@ -1337,13 +1307,11 @@ AOA_SSA = 11020,
         PID_TUNING_ACCZ=4, 
     	///<summary>  | </summary>
         PID_TUNING_STEER=5, 
-    	///<summary>  | </summary>
-        PID_TUNING_LANDING=6, 
     
     };
     
     ///<summary>  </summary>
-    public enum MAG_CAL_STATUS: byte
+    public enum MAG_CAL_STATUS: int /*default*/
     {
 			///<summary>  | </summary>
         MAG_CAL_NOT_STARTED=0, 
@@ -1377,16 +1345,6 @@ AOA_SSA = 11020,
         MAV_REMOTE_LOG_DATA_BLOCK_NACK=0, 
     	///<summary> This block has been received | </summary>
         MAV_REMOTE_LOG_DATA_BLOCK_ACK=1, 
-    
-    };
-    
-    ///<summary> Bus types for device operations </summary>
-    public enum DEVICE_OP_BUSTYPE: byte
-    {
-			///<summary> I2C Device operation | </summary>
-        I2C=0, 
-    	///<summary> SPI Device operation | </summary>
-        SPI=1, 
     
     };
     
@@ -2995,12 +2953,12 @@ AOA_SSA = 11020,
         public  ushort breach_count;
             /// <summary> state of AP_Limits, (see enum LimitState, LIMITS_STATE) LIMITS_STATE</summary>
         public  /*LIMITS_STATE*/byte limits_state;
-            /// <summary> AP_Limit_Module bitfield of enabled modules, (see enum moduleid or LIMIT_MODULE) LIMIT_MODULE</summary>
-        public  /*LIMIT_MODULE*/byte mods_enabled;
-            /// <summary> AP_Limit_Module bitfield of required modules, (see enum moduleid or LIMIT_MODULE) LIMIT_MODULE</summary>
-        public  /*LIMIT_MODULE*/byte mods_required;
-            /// <summary> AP_Limit_Module bitfield of triggered modules, (see enum moduleid or LIMIT_MODULE) LIMIT_MODULE</summary>
-        public  /*LIMIT_MODULE*/byte mods_triggered;
+            /// <summary> AP_Limit_Module bitfield of enabled modules, (see enum moduleid or LIMIT_MODULE) </summary>
+        public  byte mods_enabled;
+            /// <summary> AP_Limit_Module bitfield of required modules, (see enum moduleid or LIMIT_MODULE) </summary>
+        public  byte mods_required;
+            /// <summary> AP_Limit_Module bitfield of triggered modules, (see enum moduleid or LIMIT_MODULE) </summary>
+        public  byte mods_triggered;
     
     };
 
@@ -3145,8 +3103,8 @@ AOA_SSA = 11020,
         public  byte idx;
             /// <summary> total number of points (for sanity checking) </summary>
         public  byte count;
-            /// <summary> See RALLY_FLAGS enum for definition of the bitmask. RALLY_FLAGS</summary>
-        public  /*RALLY_FLAGS*/byte flags;
+            /// <summary> See RALLY_FLAGS enum for definition of the bitmask. </summary>
+        public  byte flags;
     
     };
 
@@ -3169,7 +3127,7 @@ AOA_SSA = 11020,
     ///<summary> Status of compassmot calibration </summary>
     public struct mavlink_compassmot_status_t
     {
-        /// <summary> current (Ampere) </summary>
+        /// <summary> current (amps) </summary>
         public  float current;
             /// <summary> Motor Compensation X </summary>
         public  float CompensationX;
@@ -3225,8 +3183,8 @@ AOA_SSA = 11020,
         public  byte target_system;
             /// <summary> Camera ID </summary>
         public  byte cam_idx;
-            /// <summary> See CAMERA_STATUS_TYPES enum for definition of the bitmask CAMERA_STATUS_TYPES</summary>
-        public  /*CAMERA_STATUS_TYPES*/byte event_id;
+            /// <summary> See CAMERA_STATUS_TYPES enum for definition of the bitmask </summary>
+        public  byte event_id;
     
     };
 
@@ -3259,19 +3217,19 @@ AOA_SSA = 11020,
         public  byte target_system;
             /// <summary> Camera ID </summary>
         public  byte cam_idx;
-            /// <summary> See CAMERA_FEEDBACK_FLAGS enum for definition of the bitmask CAMERA_FEEDBACK_FLAGS</summary>
-        public  /*CAMERA_FEEDBACK_FLAGS*/byte flags;
+            /// <summary> See CAMERA_FEEDBACK_FLAGS enum for definition of the bitmask </summary>
+        public  byte flags;
     
     };
 
 
     [StructLayout(LayoutKind.Sequential,Pack=1,Size=4)]
-    ///<summary> Deprecated. Use BATTERY_STATUS instead. 2nd Battery status </summary>
+    ///<summary> 2nd Battery status </summary>
     public struct mavlink_battery2_t
     {
         /// <summary> voltage in millivolts </summary>
         public  ushort voltage;
-            /// <summary> Battery current, in centiamperes (1 = 10 milliampere), -1: autopilot does not measure the current </summary>
+            /// <summary> Battery current, in 10*milliamperes (1 = 10 milliampere), -1: autopilot does not measure the current </summary>
         public  short current_battery;
     
     };
@@ -3385,8 +3343,8 @@ AOA_SSA = 11020,
         public  byte compass_id;
             /// <summary> Bitmask of compasses being calibrated </summary>
         public  byte cal_mask;
-            /// <summary> Status (see MAG_CAL_STATUS enum) MAG_CAL_STATUS</summary>
-        public  /*MAG_CAL_STATUS*/byte cal_status;
+            /// <summary> Status (see MAG_CAL_STATUS enum) </summary>
+        public  byte cal_status;
             /// <summary> Attempt number </summary>
         public  byte attempt;
             /// <summary> Completion percentage </summary>
@@ -3426,8 +3384,8 @@ AOA_SSA = 11020,
         public  byte compass_id;
             /// <summary> Bitmask of compasses being calibrated </summary>
         public  byte cal_mask;
-            /// <summary> Status (see MAG_CAL_STATUS enum) MAG_CAL_STATUS</summary>
-        public  /*MAG_CAL_STATUS*/byte cal_status;
+            /// <summary> Status (see MAG_CAL_STATUS enum) </summary>
+        public  byte cal_status;
             /// <summary> 0=requires a MAV_CMD_DO_ACCEPT_MAG_CAL, 1=saved to parameters </summary>
         public  byte autosaved;
     
@@ -3448,8 +3406,8 @@ AOA_SSA = 11020,
         public  float compass_variance;
             /// <summary> Terrain Altitude variance </summary>
         public  float terrain_alt_variance;
-            /// <summary> Flags EKF_STATUS_FLAGS</summary>
-        public  /*EKF_STATUS_FLAGS*/ushort flags;
+            /// <summary> Flags </summary>
+        public  ushort flags;
     
     };
 
@@ -3552,8 +3510,8 @@ AOA_SSA = 11020,
         public  /*GOPRO_HEARTBEAT_STATUS*/byte status;
             /// <summary> Current capture mode GOPRO_CAPTURE_MODE</summary>
         public  /*GOPRO_CAPTURE_MODE*/byte capture_mode;
-            /// <summary> additional status bits GOPRO_HEARTBEAT_FLAGS</summary>
-        public  /*GOPRO_HEARTBEAT_FLAGS*/byte flags;
+            /// <summary> additional status bits </summary>
+        public  byte flags;
     
     };
 
@@ -3628,158 +3586,28 @@ AOA_SSA = 11020,
     };
 
 
-    [StructLayout(LayoutKind.Sequential,Pack=1,Size=51)]
-    ///<summary> Read registers for a device </summary>
-    public struct mavlink_device_op_read_t
+    [StructLayout(LayoutKind.Sequential,Pack=1,Size=2)]
+    ///<summary> Directionfinder reporting </summary>
+    public struct mavlink_directionfinder_t
     {
-        /// <summary> request ID - copied to reply </summary>
-        public  uint request_id;
-            /// <summary> System ID </summary>
-        public  byte target_system;
-            /// <summary> Component ID </summary>
-        public  byte target_component;
-            /// <summary> The bus type DEVICE_OP_BUSTYPE</summary>
-        public  /*DEVICE_OP_BUSTYPE*/byte bustype;
-            /// <summary> Bus number </summary>
-        public  byte bus;
-            /// <summary> Bus address </summary>
-        public  byte address;
-            /// <summary> Name of device on bus (for SPI) </summary>
-        [MarshalAs(UnmanagedType.ByValArray,SizeConst=40)]
-		public byte[] busname;
-            /// <summary> First register to read </summary>
-        public  byte regstart;
-            /// <summary> count of registers to read </summary>
-        public  byte count;
+        /// <summary> Signal direction </summary>
+        public  byte direction;
+            /// <summary> Signal magnitude </summary>
+        public  byte magnitude;
     
     };
 
 
-    [StructLayout(LayoutKind.Sequential,Pack=1,Size=135)]
-    ///<summary> Read registers reply </summary>
-    public struct mavlink_device_op_read_reply_t
+    [StructLayout(LayoutKind.Sequential,Pack=1,Size=3)]
+    ///<summary> Directionfinder sensor package </summary>
+    public struct mavlink_direction_sensor_t
     {
-        /// <summary> request ID - copied from request </summary>
-        public  uint request_id;
-            /// <summary> 0 for success, anything else is failure code </summary>
-        public  byte result;
-            /// <summary> starting register </summary>
-        public  byte regstart;
-            /// <summary> count of bytes read </summary>
-        public  byte count;
-            /// <summary> reply data </summary>
-        [MarshalAs(UnmanagedType.ByValArray,SizeConst=128)]
-		public byte[] data;
-    
-    };
-
-
-    [StructLayout(LayoutKind.Sequential,Pack=1,Size=179)]
-    ///<summary> Write registers for a device </summary>
-    public struct mavlink_device_op_write_t
-    {
-        /// <summary> request ID - copied to reply </summary>
-        public  uint request_id;
-            /// <summary> System ID </summary>
-        public  byte target_system;
-            /// <summary> Component ID </summary>
-        public  byte target_component;
-            /// <summary> The bus type DEVICE_OP_BUSTYPE</summary>
-        public  /*DEVICE_OP_BUSTYPE*/byte bustype;
-            /// <summary> Bus number </summary>
-        public  byte bus;
-            /// <summary> Bus address </summary>
-        public  byte address;
-            /// <summary> Name of device on bus (for SPI) </summary>
-        [MarshalAs(UnmanagedType.ByValArray,SizeConst=40)]
-		public byte[] busname;
-            /// <summary> First register to write </summary>
-        public  byte regstart;
-            /// <summary> count of registers to write </summary>
-        public  byte count;
-            /// <summary> write data </summary>
-        [MarshalAs(UnmanagedType.ByValArray,SizeConst=128)]
-		public byte[] data;
-    
-    };
-
-
-    [StructLayout(LayoutKind.Sequential,Pack=1,Size=5)]
-    ///<summary> Write registers reply </summary>
-    public struct mavlink_device_op_write_reply_t
-    {
-        /// <summary> request ID - copied from request </summary>
-        public  uint request_id;
-            /// <summary> 0 for success, anything else is failure code </summary>
-        public  byte result;
-    
-    };
-
-
-    [StructLayout(LayoutKind.Sequential,Pack=1,Size=49)]
-    ///<summary> Adaptive Controller tuning information </summary>
-    public struct mavlink_adap_tuning_t
-    {
-        /// <summary> desired rate (degrees/s) </summary>
-        public  float desired;
-            /// <summary> achieved rate (degrees/s) </summary>
-        public  float achieved;
-            /// <summary> error between model and vehicle </summary>
-        public  float error;
-            /// <summary> theta estimated state predictor </summary>
-        public  float theta;
-            /// <summary> omega estimated state predictor </summary>
-        public  float omega;
-            /// <summary> sigma estimated state predictor </summary>
-        public  float sigma;
-            /// <summary> theta derivative </summary>
-        public  float theta_dot;
-            /// <summary> omega derivative </summary>
-        public  float omega_dot;
-            /// <summary> sigma derivative </summary>
-        public  float sigma_dot;
-            /// <summary> projection operator value </summary>
-        public  float f;
-            /// <summary> projection operator derivative </summary>
-        public  float f_dot;
-            /// <summary> u adaptive controlled output command </summary>
-        public  float u;
-            /// <summary> axis PID_TUNING_AXIS</summary>
-        public  /*PID_TUNING_AXIS*/byte axis;
-    
-    };
-
-
-    [StructLayout(LayoutKind.Sequential,Pack=1,Size=44)]
-    ///<summary> camera vision based attitude and position deltas </summary>
-    public struct mavlink_vision_position_delta_t
-    {
-        /// <summary> Timestamp (microseconds, synced to UNIX time or since system boot) </summary>
-        public  ulong time_usec;
-            /// <summary> Time in microseconds since the last reported camera frame </summary>
-        public  ulong time_delta_usec;
-            /// <summary> Defines a rotation vector in body frame that rotates the vehicle from the previous to the current orientation </summary>
-        [MarshalAs(UnmanagedType.ByValArray,SizeConst=3)]
-		public float[] angle_delta;
-            /// <summary> Change in position in meters from previous to current frame rotated into body frame (0=forward, 1=right, 2=down) </summary>
-        [MarshalAs(UnmanagedType.ByValArray,SizeConst=3)]
-		public float[] position_delta;
-            /// <summary> normalised confidence value from 0 to 100 </summary>
-        public  float confidence;
-    
-    };
-
-
-    [StructLayout(LayoutKind.Sequential,Pack=1,Size=16)]
-    ///<summary> Angle of Attack and Side Slip Angle </summary>
-    public struct mavlink_aoa_ssa_t
-    {
-        /// <summary> Timestamp (micros since boot or Unix epoch) </summary>
-        public  ulong time_usec;
-            /// <summary> Angle of Attack (degrees) </summary>
-        public  float AOA;
-            /// <summary> Side Slip Angle (degrees) </summary>
-        public  float SSA;
+        /// <summary> Onboard ID of the sensor </summary>
+        public  byte id;
+            /// <summary> Signal direction </summary>
+        public  byte direction;
+            /// <summary> Signal magnitude </summary>
+        public  byte magnitude;
     
     };
 

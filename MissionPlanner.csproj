@@ -462,6 +462,12 @@
     <Compile Include="GCSViews\ConfigurationView\ConfigGPSInject.Designer.cs">
       <DependentUpon>ConfigGPSInject.cs</DependentUpon>
     </Compile>
+    <Compile Include="GCSViews\ConfigurationView\ConfigHWDirectionFinder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GCSViews\ConfigurationView\ConfigHWDirectionFinder.Designer.cs">
+      <DependentUpon>ConfigHWDirectionFinder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Grid\Grid.cs" />
     <Compile Include="Grid\GridPlugin.cs" />
     <Compile Include="Grid\GridUI.cs">
@@ -2058,6 +2064,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigHWPX4Flow.pt.resx">
       <DependentUpon>ConfigHWPX4Flow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigHWDirectionFinder.ar.resx">
+      <DependentUpon>ConfigHWDirectionFinder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigHWDirectionFinder.id-ID.resx">
+      <DependentUpon>ConfigHWDirectionFinder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigHWDirectionFinder.resx">
+      <DependentUpon>ConfigHWDirectionFinder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigHWRangeFinder.ar.resx">
       <DependentUpon>ConfigHWRangeFinder.cs</DependentUpon>

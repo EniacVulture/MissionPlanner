@@ -4498,6 +4498,28 @@ namespace MissionPlanner.GCSViews
                 GStreamer.Stop(gst);
             }
         }
+
+        private void BUT_SendCustomDirection_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ((Button)sender).Enabled = false;
+                var directionSensorPacket = new MAVLink.mavlink_direction_sensor_t
+                {
+                    //direction = Convert.ToByte(TXT_direction.Text),
+                    //magnitude = Convert.ToByte(TXT_magnitude.Text)
+                };
+                MainV2.comPort.sendPacket(
+                    directionSensorPacket,
+                    MainV2.comPort.sysidcurrent,
+                    MainV2.comPort.compidcurrent);
+            }
+            catch
+            {
+                CustomMessageBox.Show(Strings.CommandFailed, Strings.ERROR);
+            }
+            ((Button)sender).Enabled = true;
+        }
     }
 }
  

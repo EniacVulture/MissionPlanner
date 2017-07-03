@@ -75,12 +75,6 @@ namespace MissionPlanner
 
         private float _yaw = 0;
 
-        [DisplayText("SSA (deg)")]
-        public float SSA { get; set; }
-
-        [DisplayText("AOA (deg)")]
-        public float AOA { get; set; }
-
         [DisplayText("GroundCourse (deg)")]
         public float groundcourse
         {
@@ -975,8 +969,15 @@ namespace MissionPlanner
 
         float _sonarrange = 0;
 
+
         [DisplayText("Sonar Voltage (Volt)")]
         public float sonarvoltage { get; set; }
+
+        [DisplayText("DirectionFinder Direction")]
+        public float directiondirection { get; set; }
+
+        [DisplayText("DirectionFinder Magnitude")]
+        public float directionmagnitude { get; set; }
 
         // current firmware
         public MainV2.Firmwares firmware = MainV2.Firmwares.ArduCopter2;
@@ -1749,6 +1750,15 @@ namespace MissionPlanner
                         sonarvoltage = sonar.voltage;
                     }
 
+                    mavLinkMessage = MAV.getPacket((uint)MAVLink.MAVLINK_MSG_ID.DIRECTIONFINDER);
+                    if (mavLinkMessage != null)
+                    {
+                        var direction = mavLinkMessage.ToStructure<MAVLink.mavlink_directionfinder_t>();
+
+                        directiondirection = direction.direction;
+                        directionmagnitude = direction.magnitude;
+                    }
+
                     mavLinkMessage = MAV.getPacket((uint) MAVLink.MAVLINK_MSG_ID.POWER_STATUS);
                     if (mavLinkMessage != null)
                     {
@@ -2416,15 +2426,6 @@ namespace MissionPlanner
                         var mem = mavLinkMessage.ToStructure<MAVLink.mavlink_meminfo_t>();
                         freemem = mem.freemem;
                         brklevel = mem.brkval;
-                    }
-
-                    mavLinkMessage = MAV.getPacket((uint)MAVLink.MAVLINK_MSG_ID.AOA_SSA);
-                    if (mavLinkMessage != null)
-                    {
-                        var aoa_ssa = mavLinkMessage.ToStructure<MAVLink.mavlink_aoa_ssa_t>();
-
-                        AOA = aoa_ssa.AOA;
-                        SSA = aoa_ssa.SSA;
                     }
                 }
 
